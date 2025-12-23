@@ -134,3 +134,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ユーザーがアップロードした画像のURL
+MEDIA_URL = '/media/'
+
+# 画像ファイルの実際の保存場所（プロジェクト内の 'media' フォルダ）
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

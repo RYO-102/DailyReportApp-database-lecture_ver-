@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>日報を書く</title>
+    <style>
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; }
+        .helptext { font-size: 0.8em; color: #666; }
+        ul { list-style: none; padding: 0; } /* チェックボックスの点を消す */
+        li { display: inline-block; margin-right: 10px; } /* 横並びにする */
+    </style>
+</head>
+<body>
+    <h1>日報の作成</h1>
+    <hr>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {{ form.as_p }}
+
+        <button type="submit" style="padding: 10px 20px; background: blue; color: white;">投稿する</button>
+    </form>
+    
+    <p><a href="{% url 'report_list' %}">キャンセルして戻る</a></p>
+</body>
+</html>

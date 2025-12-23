@@ -7,4 +7,5 @@ urlpatterns = [
     # 【追加】詳細ページ用のURL (例: reports/1/)
     # <int:pk> は「整数のIDが入るよ」という意味です
     path('<int:pk>/', views.report_detail, name='report_detail'),
+    path('create/', views.report_create, name='report_create'), # 追加
 ]
