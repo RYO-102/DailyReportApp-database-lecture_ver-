@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ report.title }} - 詳細</title>
+</head>
+<body>
+    <a href="{% url 'report_list' %}">← 一覧に戻る</a>
+    <hr>
+
+    <h1>{{ report.title }}</h1>
+    <p>
+        カテゴリー: {{ report.category.name }} | 
+        現在のPV数: <strong>{{ report.view_count }}</strong> 回
+    </p>
+
+    <p>今日の調子: 
+        {% if report.condition == 'bad' %}
+            <span style="color: red; font-weight: bold;">SOS ({{ report.get_condition_display }})</span>
+        {% else %}
+            {{ report.get_condition_display }}
+        {% endif %}
+    </p>
+
+    {% if report.image %}
+        <div style="margin: 20px 0;">
+            <img src="{{ report.image.url }}" alt="投稿画像" style="max-width: 100%; height: auto;">
+        </div>
+    {% endif %}
+
+    <div style="border-top: 1px solid #ccc; padding-top: 20px; margin-top: 20px;">
+        <p>{{ report.content|linebreaksbr }}</p>
+    </div>
+
+    <div style="margin-top: 20px;">
+        タグ: 
+        {% for tag in report.tags.all %}
+            <span style="background: #eee; padding: 5px;">#{{ tag.name }}</span>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

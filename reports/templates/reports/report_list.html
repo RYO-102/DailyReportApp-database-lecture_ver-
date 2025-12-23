@@ -11,7 +11,8 @@
     {% for report in reports %}
         <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 10px;">
             <h2>
-                {{ report.title }}
+                <a href="{% url 'report_detail' report.pk %}">{{ report.title }}</a>
+                
                 {% if report.condition == 'bad' %}
                     <span style="color: red; font-size: 0.6em;">【SOS！】</span>
                 {% elif report.condition == 'tired' %}
