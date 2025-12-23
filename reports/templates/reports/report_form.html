@@ -20,7 +20,9 @@
         
         {{ form.as_p }}
 
-        <button type="submit" style="padding: 10px 20px; background: blue; color: white;">投稿する</button>
+       <button type="submit" style="padding: 10px 20px; background: blue; color: white;">
+            {% if is_edit %}更新する{% else %}投稿する{% endif %}
+        </button>
     </form>
     
     <p><a href="{% url 'report_list' %}">キャンセルして戻る</a></p>

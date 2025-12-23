@@ -40,5 +40,17 @@
         {% endfor %}
     </div>
 
+    <div style="margin-top: 20px;">
+        <a href="{% url 'report_update' report.pk %}" 
+        style="background: orange; color: white; padding: 5px 10px; text-decoration: none; margin-right: 10px;">
+        編集する
+        </a>
+
+        <a href="{% url 'report_delete' report.pk %}" 
+        style="background: red; color: white; padding: 5px 10px; text-decoration: none;">
+        削除する
+        </a>
+    </div>
+
 </body>
 </html>

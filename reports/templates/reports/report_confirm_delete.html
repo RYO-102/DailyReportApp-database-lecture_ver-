@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>削除の確認</title>
+</head>
+<body>
+    <h1>削除の確認</h1>
+    <p>本当に「{{ report.title }}」を削除してもよろしいですか？</p>
+    <p style="color: red;">※この操作は取り消せません。</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" style="background: red; color: white; padding: 10px;">はい、削除します</button>
+        <a href="{% url 'report_detail' report.pk %}">キャンセル</a>
+    </form>
+</body>
+</html>

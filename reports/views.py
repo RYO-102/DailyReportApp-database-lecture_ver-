@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import F # 【追加】データベースレベルでの演算用
 from .models import DailyReport
 from django.db import transaction # 【追加】トランザクション用
@@ -77,3 +77,37 @@ def report_create(request):
         form = DailyReportForm()
 
     return render(request, 'reports/report_form.html', {'form': form})
+
+def report_update(request, pk):
+    """
+    記事編集ページ (Update)
+    既存のデータをフォームに埋め込んだ状態(instance=report)で表示します。
+    """
+    report = get_object_or_404(DailyReport, pk=pk)
+
+    if request.method == 'POST':
+        # instance=report を渡すことで、新規作成ではなく「上書き」になります
+        form = DailyReportForm(request.POST, request.FILES, instance=report)
+        if form.is_valid():
+            with transaction.atomic():
+                form.save() # 更新時はこれだけでTagなどの多対多も自動保存されます
+            return redirect('report_detail', pk=pk)
+    else:
+        # フォームに既存データが入った状態で初期化
+        form = DailyReportForm(instance=report)
+
+    # テンプレートは作成用（report_form.html）を使い回します
+    return render(request, 'reports/report_form.html', {'form': form, 'is_edit': True})
+
+def report_delete(request, pk):
+    """
+    記事削除機能 (Delete)
+    POSTリクエストが来たときだけ削除を実行します（誤操作防止）。
+    """
+    report = get_object_or_404(DailyReport, pk=pk)
+
+    if request.method == 'POST':
+        report.delete()
+        return redirect('report_list')
+
+    return render(request, 'reports/report_confirm_delete.html', {'report': report})
