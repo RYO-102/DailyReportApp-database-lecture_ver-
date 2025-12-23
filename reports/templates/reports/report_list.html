@@ -48,6 +48,34 @@
         .bg-orange { background-color: #fd7e14; } /* Tired */
         .bg-green { background-color: #28a745; }  /* Good/Excellent */
         .bg-blue { background-color: #17a2b8; }   /* Normal */
+
+        @media (max-width: 600px) {
+            /* 検索バーなどを縦積みにする */
+            .action-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-form {
+                flex-direction: column;
+                width: 100%;
+            }
+            .search-input, .search-select {
+                width: 100%; /* 横幅いっぱいに */
+                margin-bottom: 10px;
+            }
+            
+            /* ヘッダー周りの調整 */
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            /* コンテナの余白を減らす */
+            .container {
+                padding: 15px;
+            }
+        }
     </style>
 </head>
 <body>
