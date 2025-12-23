@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>日報アプリ</title>
+</head>
+<body>
+    <h1>みんなの日報一覧</h1>
+    <hr>
+
+    {% for report in reports %}
+        <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 10px;">
+            <h2>
+                {{ report.title }}
+                {% if report.condition == 'bad' %}
+                    <span style="color: red; font-size: 0.6em;">【SOS！】</span>
+                {% elif report.condition == 'tired' %}
+                    <span style="color: orange; font-size: 0.6em;">【お疲れ気味】</span>
+                {% else %}
+                    <span style="color: green; font-size: 0.6em;">【{{ report.get_condition_display }}】</span>
+                {% endif %}
+            </h2>
+
+            <p>
+                <strong>{{ report.author.username }}</strong> さん 
+                ({{ report.created_at|date:"Y/m/d H:i" }}) | 
+                カテゴリー: {{ report.category.name }}
+            </p>
+
+            <p>
+                タグ: 
+                {% for tag in report.tags.all %}
+                    <span style="background: #eee; padding: 2px 5px;">#{{ tag.name }}</span>
+                {% endfor %}
+            </p>
+
+            <p>{{ report.content|linebreaksbr }}</p>
+        </div>
+    {% empty %}
+        <p>まだ日報はありません。</p>
+    {% endfor %}
+</body>
+</html>
