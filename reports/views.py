@@ -3,6 +3,8 @@ from django.db import transaction
 from django.db.models import F
 from .models import DailyReport
 from .forms import DailyReportForm, CommentForm
+from django.contrib.auth.decorators import login_required # 追加
+from django.core.exceptions import PermissionDenied       # 追加
 
 def report_list(request):
     """
@@ -32,6 +34,10 @@ def report_detail(request, pk):
 
     # コメント投稿処理（POSTリクエスト時）
     if request.method == 'POST':
+        # 【追加】ログインしていなければログイン画面へ飛ばす
+        if not request.user.is_authenticated:
+            return redirect('login')
+        
         form = CommentForm(request.POST)
         if form.is_valid():
             # 【外部キーの手動割り当て】
@@ -59,6 +65,8 @@ def report_detail(request, pk):
     }
     return render(request, 'reports/report_detail.html', context)
 
+# 【追加】未ログインなら実行させない
+@login_required
 def report_create(request):
     """
     新規記事投稿
@@ -86,11 +94,17 @@ def report_create(request):
 
     return render(request, 'reports/report_form.html', {'form': form})
 
+# 【追加】未ログインなら実行させない
+@login_required
 def report_update(request, pk):
     """
     記事編集 (Update)
     """
     report = get_object_or_404(DailyReport, pk=pk)
+    
+    # 【追加】自分以外の記事ならエラー画面(403)を出す
+    if report.author != request.user:
+        raise PermissionDenied
 
     if request.method == 'POST':
         form = DailyReportForm(request.POST, request.FILES, instance=report)
@@ -104,11 +118,17 @@ def report_update(request, pk):
 
     return render(request, 'reports/report_form.html', {'form': form, 'is_edit': True})
 
+# 【追加】未ログインなら実行させない
+@login_required
 def report_delete(request, pk):
     """
     記事削除 (Delete)
     """
     report = get_object_or_404(DailyReport, pk=pk)
+
+    # 【追加】自分以外の記事ならエラー画面(403)を出す
+    if report.author != request.user:
+        raise PermissionDenied
 
     if request.method == 'POST':
         # 関連するタグ情報（中間テーブル）もカスケード、または設定に従い適切に削除される
