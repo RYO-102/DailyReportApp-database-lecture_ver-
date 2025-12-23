@@ -144,3 +144,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # 【追加】ログイン・ログアウト後のリダイレクト先
 LOGIN_REDIRECT_URL = 'report_list'  # ログインしたら一覧ページへ
 LOGOUT_REDIRECT_URL = 'report_list' # ログアウトしても一覧ページへ
+
+# ngrok経由でのフォーム送信（ログインなど）を許可する設定
+# https://*.ngrok-free.app は「どんなサブドメインでもOK」という意味です
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.ngrok-free.app',
+    'https://*.ngrok-free.dev',
+]
