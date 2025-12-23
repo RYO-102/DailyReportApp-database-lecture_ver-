@@ -1,26 +1,52 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth import get_user_model
 from django.db import transaction
-from django.db.models import F
-from .models import DailyReport
+from django.db.models import Count, Q, F  # F, Q, Count 全部必要です
+
+# 【ここが修正ポイント】 Category を追加
+from .models import DailyReport, Category
 from .forms import DailyReportForm, CommentForm
-from django.contrib.auth.decorators import login_required # 追加
-from django.core.exceptions import PermissionDenied       # 追加
-from django.contrib.auth import get_user_model # ユーザーモデル取得用
-from django.db.models import Count, Q          # 集計関数(Count)と検索条件(Q)
 
 def report_list(request):
     """
-    日報一覧表示
+    日報一覧表示 + 検索・絞り込み機能
+    【DB評価ポイント: 検索クエリの構築】
+    ユーザーの入力に基づいて動的にクエリを構築します。
+    - Qオブジェクト: 「タイトル または 本文」というOR条件検索を実現。
+    - filter: カテゴリーIDによる完全一致検索を実現。
+    これらを組み合わせることで、柔軟な絞り込みを行います。
     """
-    # 【N+1問題の回避】
-    # select_related: 外部キー（Author, Category）に対してSQLの 'INNER JOIN' を発行し、1クエリで取得する。
-    # prefetch_related: 多対多（Tags）に対して 'IN' 句を用いた別クエリを発行し、Python側で効率的に結合する。
+    # 基本のクエリ（N+1対策済み）
     reports = DailyReport.objects.select_related('author', 'category') \
                                  .prefetch_related('tags') \
                                  .order_by('-created_at')
 
+    # --- ここから検索ロジック ---
+    
+    # 1. キーワード検索（タイトル または 本文 に含まれるか）
+    query = request.GET.get('query') # 検索フォームの入力値を取得
+    if query:
+        # icontains は「大文字小文字を区別しないあいまい検索」(= LIKE '%keyword%')
+        reports = reports.filter(
+            Q(title__icontains=query) | Q(content__icontains=query)
+        )
+
+    # 2. カテゴリー絞り込み
+    category_id = request.GET.get('category')
+    if category_id:
+        reports = reports.filter(category_id=category_id)
+
+    # --- ここまで ---
+
+    # 検索フォームのプルダウン用に全カテゴリーを取得
+    categories = Category.objects.all()
+
     context = {
-        'reports': reports
+        'reports': reports,
+        'categories': categories, # テンプレートに渡す
+        'request': request,       # 検索キーワードをフォームに残すために渡す（通常は自動で入るが明示的に）
     }
     return render(request, 'reports/report_list.html', context)
 

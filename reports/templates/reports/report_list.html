@@ -8,6 +8,30 @@
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h1>みんなの日報一覧</h1>
         
+        <div style="background: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+            <form method="get" style="display: flex; gap: 10px; align-items: center;">
+                
+                <input type="text" name="query" value="{{ request.GET.query }}" 
+                    placeholder="キーワード検索..." 
+                    style="padding: 5px; width: 200px;">
+                
+                <select name="category" style="padding: 5px;">
+                    <option value="">すべてのカテゴリー</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit" style="background: #333; color: white; border: none; padding: 6px 15px; cursor: pointer;">
+                    検索
+                </button>
+                
+                <a href="{% url 'report_list' %}" style="font-size: 0.9em; margin-left: 10px;">クリア</a>
+            </form>
+        </div>
+
         <div>
             {% if user.is_authenticated %}
                 <span style="margin-right: 10px;">
