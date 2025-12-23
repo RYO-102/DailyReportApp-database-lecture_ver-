@@ -52,5 +52,30 @@
         </a>
     </div>
 
+    <hr style="margin-top: 40px;">
+    
+    <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px;">
+        <h3>コメント（{{ report.comments.count }}件）</h3>
+
+        {% for comment in report.comments.all %}
+            <div style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+                <strong>{{ comment.author.username }}</strong>
+                <span style="font-size: 0.8em; color: #666;">({{ comment.created_at|date:"Y/m/d H:i" }})</span>
+                <p style="margin-top: 5px;">{{ comment.text|linebreaksbr }}</p>
+            </div>
+        {% empty %}
+            <p style="color: #666;">まだコメントはありません。一番乗りで声をかけましょう！</p>
+        {% endfor %}
+
+        <div style="margin-top: 30px;">
+            <h4>コメントを書く</h4>
+            <form method="post">
+                {% csrf_token %}
+                {{ comment_form.as_p }}
+                <button type="submit" style="background: green; color: white; padding: 5px 15px;">送信</button>
+            </form>
+        </div>
+    </div>
+
 </body>
 </html>

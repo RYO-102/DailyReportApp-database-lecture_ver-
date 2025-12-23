@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.db import transaction
 from django.db.models import F
 from .models import DailyReport
-from .forms import DailyReportForm
+from .forms import DailyReportForm, CommentForm
 
 def report_list(request):
     """
@@ -22,21 +22,40 @@ def report_list(request):
 
 def report_detail(request, pk):
     """
-    記事詳細表示とPVカウント
+    記事詳細表示とコメント投稿
+    【1対多の逆参照 (Reverse Relationship)】
+    DailyReport(1) に対して Comment(多) の関係が成立しています。
+    テンプレート側で `report.comments.all` を呼び出すことで、
+    外部キーを逆方向に辿り、関連データを効率的に取得・表示します。
     """
     report = get_object_or_404(DailyReport, pk=pk)
 
-    # 【アトミックな更新と競合回避】
-    # Pythonメモリ上での計算（report.view_count += 1）ではなく、
-    # Fオブジェクトを使用してデータベース側で `UPDATE ... SET view_count = view_count + 1` を実行。
-    # これにより、アクセス集中時のレースコンディション（読み書きの競合）によるカウント不整合を防ぐ。
+    # コメント投稿処理（POSTリクエスト時）
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            # 【外部キーの手動割り当て】
+            # commit=Falseで一旦インスタンスを生成し、
+            # 確定していない外部キー情報（著者、対象記事）をセットしてから保存する。
+            comment = form.save(commit=False)
+            comment.author = request.user   # ログインユーザー（著者）
+            comment.report = report         # 対象の日報（外部キー）
+            comment.save()                  # INSERT発行
+            return redirect('report_detail', pk=pk)
+    else:
+        form = CommentForm()
+
+    # 【アトミック更新 (Atomic Update)】
+    # Fオブジェクトを使用し、データベースレベルで `view_count = view_count + 1` を実行。
+    # 競合状態（レースコンディション）を防ぎ、正確なPV集計を実現。
     DailyReport.objects.filter(pk=pk).update(view_count=F('view_count') + 1)
     
-    # DB側で更新された最新の値をインスタンスに再ロード
+    # DBで更新された最新の値を再取得
     report.refresh_from_db()
 
     context = {
-        'report': report
+        'report': report,
+        'comment_form': form,
     }
     return render(request, 'reports/report_detail.html', context)
 
