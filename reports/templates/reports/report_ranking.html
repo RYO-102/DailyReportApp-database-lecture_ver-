@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>活動ランキング</title>
+</head>
+<body>
+    <h1>📊 チーム活動ランキング</h1>
+    <a href="{% url 'report_list' %}">← 一覧に戻る</a>
+    <hr>
+
+    <div style="display: flex; gap: 50px;">
+        
+        <div style="flex: 1;">
+            <h2 style="color: blue;">🏆 たくさん書いた人</h2>
+            <table border="1" style="width: 100%; border-collapse: collapse;">
+                <tr style="background: #eee;">
+                    <th>順位</th>
+                    <th>名前</th>
+                    <th>投稿数</th>
+                </tr>
+                {% for user in effort_ranking %}
+                <tr>
+                    <td style="text-align: center;">{{ forloop.counter }}</td>
+                    <td>{{ user.username }}</td>
+                    <td style="text-align: center;">{{ user.report_count }}回</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3">まだデータがありません</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div style="flex: 1;">
+            <h2 style="color: red;">🚑 SOSを出した回数</h2>
+            <p>※チームで支え合いましょう！</p>
+            <table border="1" style="width: 100%; border-collapse: collapse;">
+                <tr style="background: #ffe6e6;">
+                    <th>順位</th>
+                    <th>名前</th>
+                    <th>SOS回数</th>
+                </tr>
+                {% for user in sos_ranking %}
+                <tr>
+                    <td style="text-align: center;">{{ forloop.counter }}</td>
+                    <td>{{ user.username }}</td>
+                    <td style="text-align: center; color: red; font-weight: bold;">{{ user.sos_count }}回</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3">現在、SOSを出している人はいません（平和です！）</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    </div>
+</body>
+</html>

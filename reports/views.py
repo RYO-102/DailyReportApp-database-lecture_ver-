@@ -5,6 +5,8 @@ from .models import DailyReport
 from .forms import DailyReportForm, CommentForm
 from django.contrib.auth.decorators import login_required # 追加
 from django.core.exceptions import PermissionDenied       # 追加
+from django.contrib.auth import get_user_model # ユーザーモデル取得用
+from django.db.models import Count, Q          # 集計関数(Count)と検索条件(Q)
 
 def report_list(request):
     """
@@ -136,3 +138,32 @@ def report_delete(request, pk):
         return redirect('report_list')
 
     return render(request, 'reports/report_confirm_delete.html', {'report': report})
+
+@login_required
+def report_ranking(request):
+    """
+    ランキング・集計画面
+    【DB評価ポイント: 集計関数と条件付き集計】
+    Pythonのforループで数えるのではなく、データベースの `GROUP BY` と集計関数を使用。
+    特に `Count(filter=Q(...))` を使うことで、「特定の条件（SOS）に合致する行だけ」を
+    効率的にカウントしています。
+    """
+    User = get_user_model()
+
+    # 1. 投稿数ランキング（記事数が多い順）
+    # SQLイメージ: SELECT username, COUNT(report.id) AS report_count FROM user ... GROUP BY user.id ORDER BY report_count DESC
+    effort_ranking = User.objects.annotate(
+        report_count=Count('reports')
+    ).order_by('-report_count')[:5] # 上位5名
+
+    # 2. SOS発信ランキング（条件: condition='bad' の回数）
+    # 関連するテーブル（reports）の中で、特定の条件を満たすものだけを数える高度なクエリ
+    sos_ranking = User.objects.annotate(
+        sos_count=Count('reports', filter=Q(reports__condition='bad'))
+    ).filter(sos_count__gt=0).order_by('-sos_count')[:5] # 0回の人を除外して上位5名
+
+    context = {
+        'effort_ranking': effort_ranking,
+        'sos_ranking': sos_ranking,
+    }
+    return render(request, 'reports/report_ranking.html', context)

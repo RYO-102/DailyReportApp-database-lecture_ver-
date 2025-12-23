@@ -26,6 +26,13 @@
                 </a>
             {% endif %}
         </div>
+
+        <div style="margin-bottom: 10px;">
+            <a href="{% url 'report_ranking' %}" style="text-decoration: none; font-weight: bold;">
+                📊 ランキング・集計を見る
+            </a>
+        </div>
+        <hr>
     </div>
 
     {% if user.is_authenticated %}

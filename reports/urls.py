@@ -16,4 +16,7 @@ urlpatterns = [
     
     # Delete (削除)
     path('<int:pk>/delete/', views.report_delete, name='report_delete'),
+    
+    # 【追加】ランキングページ
+    path('ranking/', views.report_ranking, name='report_ranking'),
 ]
