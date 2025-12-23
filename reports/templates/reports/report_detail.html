@@ -65,11 +65,16 @@
 
         <div style="margin-top: 30px;">
             <h4>コメントを書く</h4>
-            <form method="post">
-                {% csrf_token %}
-                {{ comment_form.as_p }}
-                <button type="submit" style="background: green; color: white; padding: 5px 15px;">送信</button>
-            </form>
+            
+            {% if user.is_authenticated %}
+                <form method="post">
+                    {% csrf_token %}
+                    {{ comment_form.as_p }}
+                    <button type="submit" style="background: green; color: white; padding: 5px 15px;">送信</button>
+                </form>
+            {% else %}
+                <p>コメントを投稿するには <a href="{% url 'login' %}">ログイン</a> してください。</p>
+            {% endif %}
         </div>
     </div>
 
