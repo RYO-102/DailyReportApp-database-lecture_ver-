@@ -1,16 +1,16 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import F # 【追加】データベースレベルでの演算用
+from django.db import transaction
+from django.db.models import F
 from .models import DailyReport
-from django.db import transaction # 【追加】トランザクション用
-from .forms import DailyReportForm # 【追加】作成したフォーム
+from .forms import DailyReportForm
 
 def report_list(request):
     """
-    トップページ：日報の一覧を表示する
-    【講義アピールポイント】
-    N+1問題を回避するため、select_related（外部キー）とprefetch_related（多対多）を使用し、
-    SQLの発行回数を劇的に減らしています。
+    日報一覧表示
     """
+    # 【N+1問題の回避】
+    # select_related: 外部キー（Author, Category）に対してSQLの 'INNER JOIN' を発行し、1クエリで取得する。
+    # prefetch_related: 多対多（Tags）に対して 'IN' 句を用いた別クエリを発行し、Python側で効率的に結合する。
     reports = DailyReport.objects.select_related('author', 'category') \
                                  .prefetch_related('tags') \
                                  .order_by('-created_at')
@@ -22,20 +22,17 @@ def report_list(request):
 
 def report_detail(request, pk):
     """
-    記事詳細ページ
-    【講義アピールポイント】
-    Fオブジェクトを使用することで、Python側ではなくDB側で計算を行う
-    「アトミックな更新（Atomic Update）」を実装。
-    レースコンディション（競合状態）を防ぎ、正確なPVカウントを実現しています。
-    発行されるSQL: UPDATE reports_dailyreport SET view_count = view_count + 1 WHERE id = ...
+    記事詳細表示とPVカウント
     """
-    # 記事を取得（存在しない場合は404エラーを出す）
     report = get_object_or_404(DailyReport, pk=pk)
 
-    # PVカウントの更新 (Fオブジェクトを使用)
+    # 【アトミックな更新と競合回避】
+    # Pythonメモリ上での計算（report.view_count += 1）ではなく、
+    # Fオブジェクトを使用してデータベース側で `UPDATE ... SET view_count = view_count + 1` を実行。
+    # これにより、アクセス集中時のレースコンディション（読み書きの競合）によるカウント不整合を防ぐ。
     DailyReport.objects.filter(pk=pk).update(view_count=F('view_count') + 1)
     
-    # 更新された最新の値をDBから読み込み直す（これをしないと画面上の数字が古いままになる）
+    # DB側で更新された最新の値をインスタンスに再ロード
     report.refresh_from_db()
 
     context = {
@@ -45,68 +42,57 @@ def report_detail(request, pk):
 
 def report_create(request):
     """
-    記事投稿ページ
-    【講義アピールポイント】
-    transaction.atomic() を使用して、データの整合性を保証しています。
-    もし記事の保存後にタグの保存でエラーが起きても、記事の保存ごとロールバック（取り消し）され、
-    「タグのない中途半端な記事」が残ることを防ぎます。
+    新規記事投稿
     """
     if request.method == 'POST':
-        form = DailyReportForm(request.POST, request.FILES) # 画像を含むのでFILESも渡す
+        form = DailyReportForm(request.POST, request.FILES)
         if form.is_valid():
             try:
-                # トランザクション開始
+                # 【トランザクション制御 (ACID特性のAtomicity)】
+                # 記事本体のINSERTと、タグ（中間テーブル）へのINSERTを不可分な操作として実行。
+                # 途中でエラーが発生した場合は、全ての変更がロールバックされ、データの不整合を防ぐ。
                 with transaction.atomic():
-                    # 1. 記事本体を保存（まだDBにはコミットしない設定 commit=False）
                     report = form.save(commit=False)
-                    report.author = request.user # ログイン中のユーザーを著者に設定
-                    report.save() # ここで記事のIDが確定する
-                    
-                    # 2. 多対多のタグ情報を保存（これをやらないとタグが消える）
-                    # DjangoのModelFormは、commit=Falseの場合、save_m2m()を手動で呼ぶ必要がある
+                    report.author = request.user
+                    report.save()
+                    # 多対多関係の保存（中間テーブルへのレコード作成）
                     form.save_m2m()
-                    
-                # 全部成功したらトップページへ
+                
                 return redirect('report_list')
                 
             except Exception as e:
-                # エラー時の処理（ログ出しなど）
-                print(f"エラーが発生しました: {e}")
+                print(f"Transaction Error: {e}")
     else:
-        # GETリクエストなら空のフォームを表示
         form = DailyReportForm()
 
     return render(request, 'reports/report_form.html', {'form': form})
 
 def report_update(request, pk):
     """
-    記事編集ページ (Update)
-    既存のデータをフォームに埋め込んだ状態(instance=report)で表示します。
+    記事編集 (Update)
     """
     report = get_object_or_404(DailyReport, pk=pk)
 
     if request.method == 'POST':
-        # instance=report を渡すことで、新規作成ではなく「上書き」になります
         form = DailyReportForm(request.POST, request.FILES, instance=report)
         if form.is_valid():
+            # 更新時もタグの整合性を保つためトランザクションを使用
             with transaction.atomic():
-                form.save() # 更新時はこれだけでTagなどの多対多も自動保存されます
+                form.save()
             return redirect('report_detail', pk=pk)
     else:
-        # フォームに既存データが入った状態で初期化
         form = DailyReportForm(instance=report)
 
-    # テンプレートは作成用（report_form.html）を使い回します
     return render(request, 'reports/report_form.html', {'form': form, 'is_edit': True})
 
 def report_delete(request, pk):
     """
-    記事削除機能 (Delete)
-    POSTリクエストが来たときだけ削除を実行します（誤操作防止）。
+    記事削除 (Delete)
     """
     report = get_object_or_404(DailyReport, pk=pk)
 
     if request.method == 'POST':
+        # 関連するタグ情報（中間テーブル）もカスケード、または設定に従い適切に削除される
         report.delete()
         return redirect('report_list')
 
