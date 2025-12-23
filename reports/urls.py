@@ -2,19 +2,18 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # 一覧ページ
+    # Read (一覧)
     path('', views.report_list, name='report_list'),
     
-    # 詳細ページ
+    # Read (詳細)
     path('<int:pk>/', views.report_detail, name='report_detail'),
     
-    # 新規作成ページ
+    # Create (新規作成)
     path('create/', views.report_create, name='report_create'),
     
-    # 【ここが抜けている可能性が高いです】
-    # 編集ページ
+    # Update (編集)
     path('<int:pk>/edit/', views.report_update, name='report_update'),
     
-    # 削除機能
+    # Delete (削除)
     path('<int:pk>/delete/', views.report_delete, name='report_delete'),
 ]
