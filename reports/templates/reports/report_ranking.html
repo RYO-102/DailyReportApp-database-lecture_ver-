@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>活動ランキング・分析</title>
+    <style>
+        /* 共通スタイル */
+        body { font-family: "Helvetica Neue", Arial, sans-serif; background-color: #f8f9fa; color: #333; margin: 0; padding: 20px; line-height: 1.6; }
+        
+        .container { max-width: 900px; margin: 0 auto; }
+
+        /* ヘッダー */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #ddd; padding-bottom: 15px; }
+        .header h1 { margin: 0; color: #2c3e50; font-size: 1.8em; }
+
+        /* ボタン */
+        .btn { padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer; font-size: 0.9em; text-decoration: none; display: inline-block; color: white; }
+        .btn-secondary { background-color: #6c757d; }
+
+        /* グリッドレイアウト */
+        .dashboard-grid { display: flex; gap: 30px; flex-wrap: wrap; }
+        .dashboard-card { flex: 1; min-width: 300px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+
+        /* ランキング見出し */
+        .card-title { margin-top: 0; margin-bottom: 15px; font-size: 1.4em; border-bottom: 2px solid #eee; padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .title-effort { color: #007bff; border-color: #b8daff; }
+        .title-sos { color: #dc3545; border-color: #f5c6cb; }
+
+        /* テーブルスタイル */
+        .ranking-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .ranking-table th { background-color: #f8f9fa; padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6; color: #495057; }
+        .ranking-table td { padding: 12px; border-bottom: 1px solid #dee2e6; }
+        
+        /* 順位バッジ */
+        .rank-badge { display: inline-block; width: 25px; height: 25px; line-height: 25px; text-align: center; border-radius: 50%; background: #eee; font-weight: bold; font-size: 0.9em; }
+        .rank-1 { background: #ffd700; color: #856404; } /* 金 */
+        .rank-2 { background: #c0c0c0; color: #3e3e3e; } /* 銀 */
+        .rank-3 { background: #cd7f32; color: white; }    /* 銅 */
+
+        /* SOSカウント強調 */
+        .sos-highlight { color: #dc3545; font-weight: bold; }
+        .effort-highlight { color: #007bff; font-weight: bold; }
+
+        .db-note { font-size: 0.8em; color: #666; background: #f8f9fa; padding: 10px; margin-bottom: 15px; border-left: 3px solid #6c757d; }
+    
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                flex-direction: column; /* 左右並びを縦並びにする */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>📊 チーム活動分析レポート</h1>
+            <a href="{% url 'report_list' %}" class="btn btn-secondary">← 一覧に戻る</a>
+        </div>
+
+        <div class="dashboard-grid">
+            
+            <div class="dashboard-card">
+                <h2 class="card-title title-effort">
+                    <span>🏆</span> 貢献度ランキング
+                </h2>
+                
+                <div class="db-note">
+                    <strong>DB技術:</strong> JOIN + GROUP BY + COUNT による高速集計
+                </div>
+
+                <table class="ranking-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px; text-align: center;">順位</th>
+                            <th>名前</th>
+                            <th style="text-align: right;">投稿数</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in effort_ranking %}
+                        <tr>
+                            <td style="text-align: center;">
+                                <span class="rank-badge rank-{{ forloop.counter }}">{{ forloop.counter }}</span>
+                            </td>
+                            <td><strong>{{ user.username }}</strong></td>
+                            <td style="text-align: right;">
+                                <span class="effort-highlight">{{ user.report_count }}</span> 回
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="3" style="text-align: center; color: #999;">データがありません</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="dashboard-card">
+                <h2 class="card-title title-sos">
+                    <span>🚑</span> SOS発信状況
+                </h2>
+                
+                <div class="db-note">
+                    <strong>DB技術:</strong> FILTER句を用いた条件付きCOUNT集計
+                </div>
+
+                <p style="font-size: 0.9em; color: #666;">※ 困っているメンバーを早期発見するためのリストです。</p>
+
+                <table class="ranking-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px; text-align: center;">順位</th>
+                            <th>名前</th>
+                            <th style="text-align: right;">SOS回数</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in sos_ranking %}
+                        <tr>
+                            <td style="text-align: center;">
+                                <span class="rank-badge rank-{{ forloop.counter }}">{{ forloop.counter }}</span>
+                            </td>
+                            <td><strong>{{ user.username }}</strong></td>
+                            <td style="text-align: right;">
+                                <span class="sos-highlight">{{ user.sos_count }}</span> 回
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" style="text-align: center; padding: 30px 0; color: #28a745;">
+                                現在、SOSを出しているメンバーはいません。<br>
+                                🎉 チームは平和です！
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

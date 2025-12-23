@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ report.title }} | 詳細</title>
+    <style>
+        /* 共通スタイル (Listと同じトーン＆マナー) */
+        body { font-family: "Helvetica Neue", Arial, sans-serif; background-color: #f8f9fa; color: #333; margin: 0; padding: 20px; line-height: 1.6; }
+        a { text-decoration: none; color: #007bff; }
+        a:hover { text-decoration: underline; }
+        
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+
+        /* ボタン */
+        .btn { padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer; font-size: 0.9em; text-decoration: none; display: inline-block; color: white; }
+        .btn-secondary { background-color: #6c757d; } /* 戻るボタン */
+        .btn-warning { background-color: #ffc107; color: #212529; } /* 編集 */
+        .btn-danger { background-color: #dc3545; } /* 削除 */
+        .btn-primary { background-color: #007bff; } /* 送信 */
+        .btn-login { background-color: #007bff; }
+
+        /* ヘッダー情報 */
+        .report-meta { border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
+        .report-title { font-size: 2em; margin: 0 0 10px 0; color: #2c3e50; }
+        .meta-text { font-size: 0.9em; color: #666; }
+
+        /* コンディションバッジ */
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; color: white; vertical-align: middle; }
+        .bg-red { background-color: #dc3545; }
+        .bg-orange { background-color: #fd7e14; }
+        .bg-green { background-color: #28a745; }
+        .bg-blue { background-color: #17a2b8; }
+
+        /* タグ */
+        .tag-badge { background-color: #e9ecef; color: #495057; padding: 4px 10px; border-radius: 15px; font-size: 0.85em; margin-right: 5px; }
+
+        /* 画像 */
+        .report-image { margin: 20px 0; text-align: center; }
+        .report-image img { max-width: 100%; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        /* コメントエリア */
+        .comment-section { margin-top: 50px; background-color: #f1f3f5; padding: 25px; border-radius: 8px; }
+        .comment-item { background: white; padding: 15px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #e9ecef; }
+        .comment-meta { font-size: 0.8em; color: #888; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div style="margin-bottom: 20px;">
+            <a href="{% url 'report_list' %}" class="btn btn-secondary">← 一覧に戻る</a>
+        </div>
+
+        <div class="report-meta">
+            <h1 class="report-title">{{ report.title }}</h1>
+            
+            <div class="meta-text">
+                <span style="margin-right: 15px;">📂 カテゴリー: <strong>{{ report.category.name }}</strong></span>
+                
+                <span style="margin-right: 15px;">👀 PV数: <strong>{{ report.view_count }}</strong></span>
+
+                <span>🌡️ 調子: 
+                    {% if report.condition == 'bad' %}
+                        <span class="badge bg-red">SOS ({{ report.get_condition_display }})</span>
+                    {% elif report.condition == 'tired' %}
+                        <span class="badge bg-orange">{{ report.get_condition_display }}</span>
+                    {% elif report.condition == 'excellent' %}
+                        <span class="badge bg-green">{{ report.get_condition_display }}</span>
+                    {% else %}
+                        <span class="badge bg-blue">{{ report.get_condition_display }}</span>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        {% if report.image %}
+            <div class="report-image">
+                <img src="{{ report.image.url }}" alt="投稿画像">
+            </div>
+        {% endif %}
+
+        <div style="font-size: 1.1em; margin-bottom: 30px;">
+            <p>{{ report.content|linebreaksbr }}</p>
+        </div>
+
+        <div style="margin-bottom: 30px;">
+            {% for tag in report.tags.all %}
+                <span class="tag-badge">#{{ tag.name }}</span>
+            {% endfor %}
+        </div>
+
+        {% if user == report.author %}
+            <div style="text-align: right; border-top: 1px solid #eee; padding-top: 20px;">
+                <span style="font-size: 0.9em; color: #666; margin-right: 10px;">操作:</span>
+                <a href="{% url 'report_update' report.pk %}" class="btn btn-warning">編集する</a>
+                <a href="{% url 'report_delete' report.pk %}" class="btn btn-danger" style="margin-left: 5px;">削除する</a>
+            </div>
+        {% endif %}
+
+
+        <div class="comment-section">
+            <h3 style="margin-top: 0; color: #495057;">💬 コメント（{{ report.comments.count }}件）</h3>
+
+            {% for comment in report.comments.all %}
+                <div class="comment-item">
+                    <div class="comment-meta">
+                        <strong>{{ comment.author.username }}</strong> さん
+                        <span style="margin-left: 10px;">{{ comment.created_at|date:"Y/m/d H:i" }}</span>
+                    </div>
+                    <div style="color: #333;">
+                        {{ comment.text|linebreaksbr }}
+                    </div>
+                </div>
+            {% empty %}
+                <p style="color: #666; font-style: italic;">まだコメントはありません。感想やアドバイスを送りましょう！</p>
+            {% endfor %}
+
+            <div style="margin-top: 30px;">
+                <h4 style="margin-bottom: 10px;">コメントを書く</h4>
+                
+                {% if user.is_authenticated %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <div style="margin-bottom: 10px;">
+                            {{ comment_form.text }} 
+                            </div>
+                        <button type="submit" class="btn btn-primary">送信する</button>
+                    </form>
+                {% else %}
+                    <div style="background: white; padding: 15px; border-radius: 4px; text-align: center;">
+                        <p style="margin: 0;">コメントを投稿するには <a href="{% url 'login' %}">ログイン</a> してください。</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

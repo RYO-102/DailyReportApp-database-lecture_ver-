@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>削除の確認</title>
+    <style>
+        /* 共通スタイル */
+        body { font-family: "Helvetica Neue", Arial, sans-serif; background-color: #f8f9fa; color: #333; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 80vh; }
+        
+        .container { max-width: 500px; width: 100%; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; border-top: 5px solid #dc3545; }
+
+        h1 { margin-top: 0; color: #dc3545; }
+        
+        .report-title { font-size: 1.2em; font-weight: bold; margin: 20px 0; padding: 10px; background-color: #f8f9fa; border-radius: 4px; }
+        
+        .warning-text { color: #dc3545; font-weight: bold; font-size: 0.9em; margin-bottom: 30px; }
+
+        .btn { padding: 10px 20px; border-radius: 4px; border: none; cursor: pointer; font-size: 1em; text-decoration: none; display: inline-block; margin: 0 5px; color: white; min-width: 100px; }
+        .btn-danger { background-color: #dc3545; }
+        .btn-secondary { background-color: #6c757d; }
+        .btn:hover { opacity: 0.9; }
+
+        .db-note { font-size: 0.8em; color: #666; background: #eee; padding: 10px; border-radius: 4px; margin-top: 30px; text-align: left; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>⚠ 削除の確認</h1>
+        
+        <p>以下の日報を削除しようとしています。</p>
+        
+        <div class="report-title">
+            {{ report.title }}
+        </div>
+
+        <p class="warning-text">※ この操作は取り消すことができません。</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div style="margin-top: 20px;">
+                <a href="{% url 'report_detail' report.pk %}" class="btn btn-secondary">キャンセル</a>
+                <button type="submit" class="btn btn-danger">削除する</button>
+            </div>
+        </form>
+
+        <div class="db-note">
+            <strong>技術メモ:</strong><br>
+            削除を実行すると、紐づいている「コメント」や「タグの中間テーブル情報」も同時にクリーンアップされます（整合性の維持）。
+        </div>
+    </div>
+
+</body>
+</html>

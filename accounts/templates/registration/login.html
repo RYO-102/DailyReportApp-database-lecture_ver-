@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ログイン | 日報アプリ</title>
+    <style>
+        /* 共通スタイル */
+        body { font-family: "Helvetica Neue", Arial, sans-serif; background-color: #f0f2f5; color: #333; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        
+        .login-container { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+
+        h1 { margin: 0 0 30px 0; color: #2c3e50; font-size: 1.8em; }
+
+        /* フォーム要素 */
+        .form-group { margin-bottom: 20px; text-align: left; }
+        
+        label { display: block; font-weight: bold; margin-bottom: 8px; color: #495057; font-size: 0.9em; }
+        
+        /* Djangoのフォームウィジェットにスタイルを適用するためのCSSハック */
+        /* inputタグ全般にスタイルを当てる */
+        input[type="text"], input[type="password"] { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ced4da; 
+            border-radius: 4px; 
+            font-size: 16px; 
+            box-sizing: border-box; /* paddingを含めた幅計算 */
+            transition: border-color 0.15s ease-in-out;
+        }
+        input[type="text"]:focus, input[type="password"]:focus { 
+            border-color: #80bdff; 
+            outline: 0; 
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25); 
+        }
+
+        /* ボタン */
+        .btn { padding: 12px; border-radius: 4px; border: none; cursor: pointer; font-size: 1em; font-weight: bold; width: 100%; margin-top: 10px; }
+        .btn-primary { background-color: #007bff; color: white; transition: background 0.3s; }
+        .btn-primary:hover { background-color: #0056b3; }
+
+        /* エラーメッセージ */
+        .error-box { background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 4px; border: 1px solid #f5c6cb; margin-top: 20px; font-size: 0.9em; }
+
+        /* リンク */
+        .back-link { margin-top: 20px; display: block; font-size: 0.9em; color: #6c757d; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+
+        .security-note { font-size: 0.75em; color: #aaa; margin-top: 30px; border-top: 1px solid #eee; padding-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h1>🔐 ログイン</h1>
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">ユーザー名</label>
+                {{ form.username }}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">パスワード</label>
+                {{ form.password }}
+            </div>
+
+            <button type="submit" class="btn btn-primary">ログインして開始</button>
+            
+            {% if form.errors %}
+                <div class="error-box">
+                    ユーザー名またはパスワードが間違っています。
+                </div>
+            {% endif %}
+        </form>
+
+        <a href="{% url 'report_list' %}" class="back-link">← トップページに戻る</a>
+
+        <div class="security-note">
+            Secure Login System powered by Django Auth
+        </div>
+    </div>
+
+</body>
+</html>

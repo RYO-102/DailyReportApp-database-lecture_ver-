@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日報アプリ | 一覧</title>
+    <style>
+        /* ベーススタイル */
+        body { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; background-color: #f8f9fa; color: #333; margin: 0; padding: 20px; }
+        a { text-decoration: none; color: #007bff; }
+        a:hover { text-decoration: underline; }
+
+        /* レイアウトコンテナ */
+        .container { max-width: 800px; margin: 0 auto; }
+
+        /* ヘッダーエリア */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+        .header h1 { margin: 0; font-size: 24px; color: #2c3e50; }
+        .user-info { font-size: 0.9em; }
+
+        /* ボタン類のスタイル */
+        .btn { padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer; font-size: 0.9em; text-decoration: none; display: inline-block; }
+        .btn-primary { background-color: #007bff; color: white; }
+        .btn-success { background-color: #28a745; color: white; font-weight: bold; }
+        .btn-secondary { background-color: #6c757d; color: white; }
+        .btn-dark { background-color: #343a40; color: white; }
+        
+        /* 検索・アクションエリア */
+        .action-bar { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .search-form { display: flex; gap: 10px; align-items: center; }
+        .search-input { padding: 6px; border: 1px solid #ced4da; border-radius: 4px; width: 200px; }
+        .search-select { padding: 6px; border: 1px solid #ced4da; border-radius: 4px; }
+
+        /* 日報カード */
+        .report-card { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .report-card:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        /* カード内要素 */
+        .card-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+        .report-title { font-size: 1.4em; font-weight: bold; color: #333; margin: 0; }
+        .meta-info { font-size: 0.85em; color: #666; margin-bottom: 10px; }
+        .tags { margin-bottom: 10px; }
+        .tag-badge { background-color: #e9ecef; color: #495057; padding: 3px 8px; border-radius: 12px; font-size: 0.8em; margin-right: 5px; }
+
+        /* コンディションバッジ */
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.7em; font-weight: bold; color: white; vertical-align: middle; margin-left: 10px; }
+        .bg-red { background-color: #dc3545; }    /* SOS */
+        .bg-orange { background-color: #fd7e14; } /* Tired */
+        .bg-green { background-color: #28a745; }  /* Good/Excellent */
+        .bg-blue { background-color: #17a2b8; }   /* Normal */
+
+        @media (max-width: 600px) {
+            /* 検索バーなどを縦積みにする */
+            .action-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-form {
+                flex-direction: column;
+                width: 100%;
+            }
+            .search-input, .search-select {
+                width: 100%; /* 横幅いっぱいに */
+                margin-bottom: 10px;
+            }
+            
+            /* ヘッダー周りの調整 */
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            /* コンテナの余白を減らす */
+            .container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <div class="header">
+            <h1>みんなの日報一覧</h1>
+            <div class="user-info">
+                {% if user.is_authenticated %}
+                    <span>Login: <strong>{{ user.username }}</strong></span>
+                    <form action="{% url 'logout' %}" method="post" style="display: inline; margin-left: 10px;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.8em;">ログアウト</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-primary">ログイン</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="action-bar">
+            <form method="get" class="search-form">
+                <input type="text" name="query" value="{{ request.GET.query|default:'' }}" 
+                       class="search-input" placeholder="キーワード...">
+                
+                <select name="category" class="search-select">
+                    <option value="">全てのカテゴリ</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit" class="btn btn-dark">検索</button>
+                {% if request.GET.query or request.GET.category %}
+                    <a href="{% url 'report_list' %}" style="font-size: 0.9em; color: #dc3545;">クリア</a>
+                {% endif %}
+            </form>
+
+            <div style="display: flex; gap: 10px;">
+                <a href="{% url 'report_ranking' %}" class="btn" style="background: #6f42c1; color: white;">
+                    📊 集計
+                </a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'report_create' %}" class="btn btn-success">
+                        ＋ 日報を書く
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        {% for report in reports %}
+            <div class="report-card">
+                <div class="card-header">
+                    <div class="report-title">
+                        <a href="{% url 'report_detail' report.pk %}" style="color: inherit; text-decoration: none;">
+                            {{ report.title }}
+                        </a>
+                        
+                        {% if report.condition == 'bad' %}
+                            <span class="badge bg-red">SOS</span>
+                        {% elif report.condition == 'tired' %}
+                            <span class="badge bg-orange">お疲れ</span>
+                        {% elif report.condition == 'excellent' %}
+                            <span class="badge bg-green">絶好調</span>
+                        {% else %}
+                            <span class="badge bg-blue">{{ report.get_condition_display }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="meta-info">
+                    <span style="font-weight: bold; color: #333;">{{ report.author.username }}</span> さん
+                    <span style="margin: 0 5px; color: #ccc;">|</span>
+                    {{ report.created_at|date:"Y/m/d H:i" }}
+                    <span style="margin: 0 5px; color: #ccc;">|</span>
+                    📂 {{ report.category.name }}
+                </div>
+
+                <div class="tags">
+                    {% for tag in report.tags.all %}
+                        <span class="tag-badge">#{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+
+                {% if report.image %}
+                    <div style="margin: 15px 0;">
+                        <img src="{{ report.image.url }}" alt="投稿画像" 
+                             style="max-width: 100%; max-height: 250px; object-fit: cover; border-radius: 6px; border: 1px solid #eee;">
+                    </div>
+                {% endif %}
+
+                <p style="margin-top: 10px; line-height: 1.6; color: #444;">
+                    {{ report.content|truncatechars:100|linebreaksbr }}
+                    {% if report.content|length > 100 %}
+                        <a href="{% url 'report_detail' report.pk %}" style="font-size: 0.8em;">...もっと読む</a>
+                    {% endif %}
+                </p>
+            </div>
+        {% empty %}
+            <div style="text-align: center; padding: 40px; color: #666;">
+                <p>表示できる日報がありません。</p>
+                <p>検索条件を変えるか、新しい日報を投稿してください。</p>
+            </div>
+        {% endfor %}
+
+    </div>
+</body>
+</html>

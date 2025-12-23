@@ -1,0 +1,347 @@
+[
+{
+  "model": "admin.logentry",
+  "pk": 1,
+  "fields": {
+    "action_time": "2025-12-23T13:44:56.090Z",
+    "user": 1,
+    "content_type": 7,
+    "object_id": "1",
+    "object_repr": "開発業務",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 2,
+  "fields": {
+    "action_time": "2025-12-23T13:45:11.458Z",
+    "user": 1,
+    "content_type": 7,
+    "object_id": "2",
+    "object_repr": "雑談・趣味",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 3,
+  "fields": {
+    "action_time": "2025-12-23T13:45:27.983Z",
+    "user": 1,
+    "content_type": 7,
+    "object_id": "3",
+    "object_repr": "SOS・雑談",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 4,
+  "fields": {
+    "action_time": "2025-12-23T13:45:43.989Z",
+    "user": 1,
+    "content_type": 8,
+    "object_id": "1",
+    "object_repr": "Python",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 5,
+  "fields": {
+    "action_time": "2025-12-23T13:45:49.416Z",
+    "user": 1,
+    "content_type": 8,
+    "object_id": "2",
+    "object_repr": "エラー解決",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 6,
+  "fields": {
+    "action_time": "2025-12-23T13:45:52.946Z",
+    "user": 1,
+    "content_type": 8,
+    "object_id": "3",
+    "object_repr": "ゲーム",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 7,
+  "fields": {
+    "action_time": "2025-12-23T13:45:56.807Z",
+    "user": 1,
+    "content_type": 8,
+    "object_id": "4",
+    "object_repr": "ラーメン",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 8,
+  "fields": {
+    "action_time": "2025-12-23T13:52:46.551Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "4",
+    "object_repr": "tanaka (システム開発部)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 9,
+  "fields": {
+    "action_time": "2025-12-23T13:53:27.004Z",
+    "user": 1,
+    "content_type": 6,
+    "object_id": "5",
+    "object_repr": "suzuki (システム開発部)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 10,
+  "fields": {
+    "action_time": "2025-12-23T13:54:45.717Z",
+    "user": 1,
+    "content_type": 9,
+    "object_id": "1",
+    "object_repr": "tanaka test",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 11,
+  "fields": {
+    "action_time": "2025-12-23T13:55:19.392Z",
+    "user": 1,
+    "content_type": 9,
+    "object_id": "2",
+    "object_repr": "suzuki test",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 12,
+  "fields": {
+    "action_time": "2025-12-23T13:55:48.314Z",
+    "user": 1,
+    "content_type": 9,
+    "object_id": "3",
+    "object_repr": "tanaka game",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "ndgj2ggcmmjsv34y6cvpbsefmhmawxqd",
+  "fields": {
+    "session_data": ".eJxVjEEOgjAQRe_StWmYttDWpXvOQKYzg0UNTSisjHcXEha6_e-9_1YDbmsetirLMLG6Kqcuv1tCesp8AH7gfC-ayrwuU9KHok9adV9YXrfT_TvIWPNeQwPBj5E8MxoMRjh2rQtxtAKWkjUEJgH7dqecuCXwY0eA4hrxlFB9vuzrOLE:1vY5vI:Ek7yOrHOMjGn7o0GofW-81oGYcd_1Lsx1mtcX8RNzew",
+    "expire_date": "2026-01-06T17:11:48.762Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "taagtifl21dmv5pzlce12a9pt68t90fw",
+  "fields": {
+    "session_data": ".eJxVjEEOgjAQRe_StWmYttDWpXvOQKYzg0UNTSisjHcXEha6_e-9_1YDbmsetirLMLG6Kqcuv1tCesp8AH7gfC-ayrwuU9KHok9adV9YXrfT_TvIWPNeQwPBj5E8MxoMRjh2rQtxtAKWkjUEJgH7dqecuCXwY0eA4hrxlFB9vuzrOLE:1vY4le:qyOdQlgJCpSlS8rHH8POTqrqLHhS3FSUD_hDu6wkMBY",
+    "expire_date": "2026-01-06T15:57:46.616Z"
+  }
+},
+{
+  "model": "accounts.customuser",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$wpqiY9gPXpBukW8P0w3ACa$aJwKX8hASSa5XklaMkbWkocAgkfjxN2+1ll6U7lqMT8=",
+    "last_login": "2025-12-23T17:41:02.478Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-12-23T13:30:56.556Z",
+    "employee_id": "",
+    "department": "開発部",
+    "position": "メンバー",
+    "bio": "",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.customuser",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$2ftkma3y2DbtcYGQWE8Gdh$e5lfsTDA17JMS1F1FrRq5kZsFjbMd9cqrXUQkT+XJX8=",
+    "last_login": "2025-12-23T17:32:51.449Z",
+    "is_superuser": false,
+    "username": "tanaka",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-12-23T13:52:46.222Z",
+    "employee_id": "EMP001",
+    "department": "システム開発部",
+    "position": "PM兼テックリード",
+    "bio": "チームの心理的安全性を大事にしたいです。最近は久しぶりに「ゼルダ」をやって夜更かししてしまいました 。",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.customuser",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$8VIsfjavrG7IFux6cPcfJi$dQ4Wj2RjTZlzyT/LhNDXkUYbFwe16xjIwe0SHS5qBrw=",
+    "last_login": "2025-12-23T17:37:18.754Z",
+    "is_superuser": false,
+    "username": "suzuki",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-12-23T13:53:26.667Z",
+    "employee_id": "EMP002",
+    "department": "システム開発部",
+    "position": "メンバー",
+    "bio": "入社2年目です。キャンプとラーメンが好きです 。最近ちょっと疲れ気味かも…。",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "reports.category",
+  "pk": 1,
+  "fields": {
+    "name": "開発業務",
+    "slug": "dev"
+  }
+},
+{
+  "model": "reports.category",
+  "pk": 2,
+  "fields": {
+    "name": "雑談・趣味",
+    "slug": "chat"
+  }
+},
+{
+  "model": "reports.category",
+  "pk": 3,
+  "fields": {
+    "name": "SOS・雑談",
+    "slug": "sos"
+  }
+},
+{
+  "model": "reports.tag",
+  "pk": 1,
+  "fields": {
+    "name": "Python"
+  }
+},
+{
+  "model": "reports.tag",
+  "pk": 2,
+  "fields": {
+    "name": "エラー解決"
+  }
+},
+{
+  "model": "reports.tag",
+  "pk": 3,
+  "fields": {
+    "name": "ゲーム"
+  }
+},
+{
+  "model": "reports.tag",
+  "pk": 4,
+  "fields": {
+    "name": "ラーメン"
+  }
+},
+{
+  "model": "reports.dailyreport",
+  "pk": 13,
+  "fields": {
+    "author": 4,
+    "category": 1,
+    "title": "【解決】N+1問題の解消とクエリの最適化について",
+    "content": "以前から課題だった一覧画面の表示速度の問題を解決しました。Djangoの select_related と prefetch_related を導入することで、発行されるSQLの回数を劇的に減らすことができました。\r\nまた、検索機能には Qオブジェクト を使用して、タイトルと本文の両方からAND/OR検索ができるように実装しました。デバッグツールで確認しましたが、パフォーマンスは良好です。",
+    "image": "",
+    "condition": "excellent",
+    "view_count": 0,
+    "created_at": "2025-12-23T17:36:49.283Z",
+    "updated_at": "2025-12-23T17:36:49.283Z",
+    "tags": [
+      1
+    ]
+  }
+},
+{
+  "model": "reports.dailyreport",
+  "pk": 14,
+  "fields": {
+    "author": 5,
+    "category": 1,
+    "title": "【SOS】Dockerコンテナが起動しません…助けてください",
+    "content": "docker-compose up をしたところ、以下のエラーが出て起動できなくなってしまいました。\r\n\r\nError: port is already allocated\r\n\r\n一度PCを再起動してみましたが直りません。 どなたか、競合しているポートの探し方や、強制終了のコマンドを知りませんか？ 開発が止まってしまって焦っています…。",
+    "image": "",
+    "condition": "bad",
+    "view_count": 1,
+    "created_at": "2025-12-23T17:38:08.299Z",
+    "updated_at": "2025-12-23T17:38:08.299Z",
+    "tags": [
+      2
+    ]
+  }
+},
+{
+  "model": "reports.dailyreport",
+  "pk": 15,
+  "fields": {
+    "author": 1,
+    "category": 1,
+    "title": "UIデザインの修正案について",
+    "content": "本日のミーティングお疲れ様でした。一覧画面のレイアウトですが、スマホで見た時に崩れてしまう問題に対応するため、CSSのメディアクエリ（@media）を追加しました。\r\nPCでは横並び、スマホでは縦並びになるようにレスポンシブ対応を入れています。 確認をお願いします。",
+    "image": "uploads/20251223_192327.jpg",
+    "condition": "good",
+    "view_count": 1,
+    "created_at": "2025-12-23T17:42:04.411Z",
+    "updated_at": "2025-12-23T17:42:04.411Z",
+    "tags": [
+      1,
+      4
+    ]
+  }
+}
+]

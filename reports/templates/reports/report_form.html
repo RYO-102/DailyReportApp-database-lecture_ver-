@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if is_edit %}日報の編集{% else %}日報の作成{% endif %}</title>
+    <style>
+        /* 共通スタイル */
+        body { font-family: "Helvetica Neue", Arial, sans-serif; background-color: #f8f9fa; color: #333; margin: 0; padding: 20px; line-height: 1.6; }
+        
+        .container { max-width: 700px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+
+        h1 { margin-top: 0; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 30px; }
+
+        /* フォーム要素のスタイル */
+        .form-group { margin-bottom: 25px; }
+        
+        label { display: block; font-weight: bold; margin-bottom: 8px; color: #495057; }
+        
+        /* テキスト入力・エリア（forms.pyで form-control クラスが付与されています） */
+        .form-control { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ced4da; 
+            border-radius: 4px; 
+            font-size: 16px; 
+            box-sizing: border-box; /* paddingを含めた幅計算 */
+        }
+        .form-control:focus { border-color: #80bdff; outline: 0; box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25); }
+
+        /* チェックボックスリスト（タグ用） */
+        ul { list-style: none; padding: 0; margin: 0; }
+        ul li { display: inline-block; margin-right: 15px; margin-bottom: 5px; }
+        ul li label { display: inline; font-weight: normal; cursor: pointer; }
+
+        /* ラジオボタン（調子用） */
+        #id_condition { display: flex; gap: 15px; flex-wrap: wrap; }
+        #id_condition div { display: flex; align-items: center; }
+
+        /* ヘルプテキスト */
+        .helptext { display: block; font-size: 0.85em; color: #6c757d; margin-top: 5px; }
+
+        /* エラーメッセージ */
+        .errorlist { color: #dc3545; font-size: 0.9em; margin-top: 5px; font-weight: bold; }
+
+        /* ボタン */
+        .btn { padding: 12px 24px; border-radius: 4px; border: none; cursor: pointer; font-size: 1em; text-decoration: none; display: inline-block; font-weight: bold; }
+        .btn-primary { background-color: #007bff; color: white; width: 100%; transition: background 0.3s; }
+        .btn-primary:hover { background-color: #0056b3; }
+        .btn-link { background: none; color: #6c757d; text-decoration: underline; display: block; text-align: center; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>{% if is_edit %}📝 日報の編集{% else %}📝 日報の作成{% endif %}</h1>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    
+                    {{ field }}
+                    
+                    {% if field.help_text %}
+                        <span class="helptext">{{ field.help_text }}</span>
+                    {% endif %}
+                    
+                    {% for error in field.errors %}
+                        <div class="errorlist">⚠ {{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-primary">
+                {% if is_edit %}更新内容を保存する{% else %}日報を投稿する{% endif %}
+            </button>
+        </form>
+
+        {% if is_edit %}
+            <a href="{% url 'report_detail' form.instance.pk %}" class="btn-link">キャンセルして詳細に戻る</a>
+        {% else %}
+            <a href="{% url 'report_list' %}" class="btn-link">キャンセルして一覧に戻る</a>
+        {% endif %}
+    </div>
+
+</body>
+</html>
