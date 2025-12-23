@@ -21,6 +21,10 @@ from django.conf.urls.static import static   # 追加
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    
+    # 【追加】Django標準の認証URL（accounts/login/ や accounts/logout/ が使えるようになります）
+    path('accounts/', include('django.contrib.auth.urls')),
+    
     # トップページへのアクセスを reports アプリに委譲する
     path('', include('reports.urls')),
 ]

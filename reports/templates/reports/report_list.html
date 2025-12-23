@@ -5,7 +5,29 @@
     <title>日報アプリ</title>
 </head>
 <body>
-    <h1>みんなの日報一覧</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1>みんなの日報一覧</h1>
+        
+        <div>
+            {% if user.is_authenticated %}
+                <span style="margin-right: 10px;">
+                    ようこそ、<strong>{{ user.username }}</strong> さん
+                </span>
+                
+                <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="background: gray; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+                        ログアウト
+                    </button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" style="background: blue; color: white; text-decoration: none; padding: 5px 10px; border-radius: 3px;">
+                    ログイン
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
     <a href="{% url 'report_create' %}" style="display:inline-block; padding:10px; background:green; color:white; text-decoration:none;">
         ＋ 日報を書く
     </a>

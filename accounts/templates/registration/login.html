@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>ログイン</title>
+</head>
+<body>
+    <h1>ログイン</h1>
+    <hr>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 15px;">
+            <label>ユーザー名:</label>
+            {{ form.username }}
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label>パスワード:</label>
+            {{ form.password }}
+        </div>
+
+        <button type="submit" style="background: blue; color: white; padding: 5px 15px;">ログイン</button>
+    </form>
+    
+    {% if form.errors %}
+        <p style="color: red;">ユーザー名またはパスワードが違います。</p>
+    {% endif %}
+
+    <p><a href="{% url 'report_list' %}">トップページに戻る</a></p>
+</body>
+</html>

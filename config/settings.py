@@ -140,3 +140,7 @@ MEDIA_URL = '/media/'
 
 # 画像ファイルの実際の保存場所（プロジェクト内の 'media' フォルダ）
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# 【追加】ログイン・ログアウト後のリダイレクト先
+LOGIN_REDIRECT_URL = 'report_list'  # ログインしたら一覧ページへ
+LOGOUT_REDIRECT_URL = 'report_list' # ログアウトしても一覧ページへ
