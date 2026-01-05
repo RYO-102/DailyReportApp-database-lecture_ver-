@@ -55,7 +55,7 @@ Python側でのループ処理ではなく、データベースエンジン側�
 一般ユーザーが利用するメインの機能群です。
 
 * **日報のCRUD機能（作成・参照・更新・削除）**
-* その日の業務内容だけでなく、**「調子（コンディション）」**を5段階で登録可能。
+* その日の業務内容だけでなく、**「調子（コンディション）」** を5段階で登録可能。
 * 画像アップロードに対応し、視覚的な報告が可能。
 * 他者の日報に対するコメント投稿機能。
 
@@ -90,7 +90,7 @@ Dockerがインストールされている環境であれば、以下のコマ�
 ### 1. リポジトリのクローン
 
 ```bash
-git clone https://github.com/あなたのユーザー名/DailyReportApp-database-lecture_ver-.git
+git clone https://github.com/RYO-102/DailyReportApp-database-lecture_ver-.git
 cd DailyReportApp-database-lecture_ver-
 
 ```
