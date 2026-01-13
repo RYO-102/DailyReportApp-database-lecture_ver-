@@ -144,6 +144,7 @@ http://localhost:8000
 ├── accounts/       # ユーザー認証・管理機能
 ├── config/         # Djangoプロジェクト設定
 ├── reports/        # 日報アプリのメイン機能 (Model, View, Template)
+├── 提出書類/　　    # 講義用の提出書類（デモ動画, プレゼンテーション資料）
 ├── media/          # ユーザーアップロード画像 (Git管理外)
 ├── docker-compose.yml
 ├── Dockerfile
